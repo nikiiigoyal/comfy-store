@@ -66,3 +66,8 @@
     @apply bg-background text-foreground;
   }
 }
+@layer components {
+  .align-element {
+    @apply mx-auto max-w-6xl px-8;
+  }
+}
