@@ -1,5 +1,5 @@
 import { Link, useLoaderData, type LoaderFunction } from "react-router-dom"
-import type { SingleProductResponse } from "../utils/types"
+import type { CartItem, SingleProductResponse } from "../utils/types"
 import { customFetch } from "../utils/customFetch";
 import { FormatAsDollars } from "../utils/formatAsDollars";
 import { useState } from "react";
@@ -9,6 +9,10 @@ import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
 import SelectProductAmount from "../components/SelectProductAmount";
 import SelectProductColor from "../components/SelectProductColor";
+
+import { addItem } from "../features/cart/cartSlice";
+
+
 
 export const loader: LoaderFunction = async ({
   params,
