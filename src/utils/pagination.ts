@@ -1,3 +1,5 @@
+import type { CartItem, Pagination } from './types';
+
 export * from './pagination';
 
 type ConstructUrlParams = {
@@ -38,4 +40,26 @@ export const constructPrevOrNextUrl = ({
   if (nextPage > pageCount)nextPage = 1;
   const nextUrl = constructUrl({pageNumber: nextPage,search,pathname})
   return { prevUrl, nextUrl };
+};
+export type Order = {
+  id: number;
+  attributes: {
+    address: string;
+    cartItems: CartItem[];
+    createdAt: string;
+    name: string;
+    numItemsInCart: number;
+    orderTotal: string;
+    publishedAt: string;
+    updatedAt: string;
+  };
+};
+
+export type OrdersMeta = {
+  pagination: Pagination;
+};
+
+export type OrdersResponse = {
+  data: Order[];
+  meta: OrdersMeta;
 };
