@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction} from '@reduxjs/toolkit';
-import type { CartState } from '../../utils/types';
+import type { CartItem, CartState } from '../../utils/types';
 import { toast } from '../../components/ui/use-toast';
 
 const defaultState: CartState = {

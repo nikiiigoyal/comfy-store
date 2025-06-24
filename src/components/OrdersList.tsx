@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import type { OrdersResponse } from "../utils/types";
+import type { OrdersResponse } from "../utils/pagination";
 import { Table, TableBody, TableCaption, TableCell, TableHeader, TableRow } from "./ui/table";
 
 function OrdersList () {
