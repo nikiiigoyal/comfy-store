@@ -1,17 +1,22 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-export enum Mode {
-  SingleProduct = 'singleProduct',
-  CartItem = 'cartItem',
-}
-type SelectProductAmountProps = {
-    mode: Mode.SingleProduct;
-    amount: number;
-    setAmount: React.Dispatch<React.SetStateAction<number>>;
+// Replace enum with const object
+export const Mode = {
+  SingleProduct: 'singleProduct',
+  CartItem: 'cartItem',
+} as const;
 
-}
+// Create a type from the const object
+export type Mode = typeof Mode[keyof typeof Mode];
+
+type SelectProductAmountProps = {
+  mode: typeof Mode.SingleProduct;
+  amount: number;
+  setAmount: React.Dispatch<React.SetStateAction<number>>;
+};
+
 type SelectCartItemAmountProps = {
-  mode: Mode.CartItem;
+  mode: typeof Mode.CartItem;
   amount: number;
   setAmount: (value: number) => void;
 };
@@ -46,4 +51,5 @@ function SelectProductAmount({
     </>
   );
 }
+
 export default SelectProductAmount;

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useAppDispatch } from "../hooks";
 import { Button } from "../components/ui/button";
 import { Separator } from "../components/ui/separator";
-import SelectProductAmount from "../components/SelectProductAmount";
+import SelectProductAmount, { Mode } from "../components/SelectProductAmount";
 import SelectProductColor from "../components/SelectProductColor";
 
 import { addItem } from "../features/cart/cartSlice";
@@ -34,7 +34,7 @@ function SingleProduct () {
     const [amount,setAmount] = useState(1);
     const disapatch = useAppDispatch();
     const cartProduct: CartItem = {
-        cartId: product.id + productColor,
+        cartID: product.id + productColor,
         productID: product.id,
         image,title,price,amount,productColor,company,
     }

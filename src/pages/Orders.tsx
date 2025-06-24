@@ -1,9 +1,11 @@
 import { redirect, useLoaderData, type LoaderFunction } from "react-router-dom";
 import type { ReduxStore } from "../store";
-import type { OrdersResponse } from "../utils/types";
+import type { OrdersResponse } from "../utils/pagination";
 import { toast } from "../components/ui/use-toast";
 import { customFetch } from "../utils/customFetch";
 import SectionTitle from "../components/SectionTitle";
+import OrdersList from "../components/OrdersList";
+import ComplexPaginationContainer from "../components/ComplexPaginationContainer";
 
 export const loader =
   (store: ReduxStore): LoaderFunction =>
