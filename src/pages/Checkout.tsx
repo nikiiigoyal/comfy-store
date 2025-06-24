@@ -4,6 +4,7 @@ import { toast } from "../components/ui/use-toast";
 import SectionTitle from "../components/SectionTitle";
 import { useAppSelector } from "../hooks";
 import CartTotals from "../components/CartTotals";
+import CheckoutForm from "../components/CheckoutForm";
 
 export const loader =
   (store: ReduxStore): LoaderFunction =>
