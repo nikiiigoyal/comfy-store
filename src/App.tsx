@@ -18,6 +18,7 @@ import ErrorElement from "./components/ErrorElement";
 import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
 import { store } from "./store";
+import { loader } from './pages/Products';
 
 
 const router = createBrowserRouter([
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
      {
         path: 'products',
         element: <Products />,
+        loader: loader,
       },
       {
         path: 'products/:id',
@@ -77,6 +79,8 @@ const router = createBrowserRouter([
 function App() {
   // const { name } = useAppSelector((state) => state.userState);
   // console.log(name);
+  console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+console.log('Supabase Key:', import.meta.env.VITE_SUPABASE_ANON_KEY?.slice(0, 5) + '...');
   
 
   return (

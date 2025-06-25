@@ -1,22 +1,17 @@
-export type ProductsResponse = {
-    data: Product[];
-    meta: ProductsMeta;
-}
 export type Product = {
-  id: number;
+  id: string;
   attributes: {
-    category: string;
+    title: string;
     company: string;
-    createdAt: string;
     description: string;
     featured: boolean;
+    createdAt: string;
+    updatedAt: string;
     image: string;
     price: string;
-    publishedAt: string;
     shipping: boolean;
-    title: string;
-    updatedAt: string;
     colors: string[];
+    category: string;
   };
 };
 
@@ -33,27 +28,31 @@ export type Pagination = {
   total: number;
 };
 
-export type Params =  {
-    search?: string;
+export type ProductsResponse = {
+  data: Product[];
+  meta: ProductsMeta;
+};
+
+export type Params = {
+  search?: string;
   category?: string;
   company?: string;
   order?: string;
   price?: string;
   shipping?: string;
   page?: number;
-}
+};
 
 export type ProductsResponseWithParams = ProductsResponse & { params: Params };
 
 export type SingleProductResponse = {
-    data: Product;
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    meta : {};
+  data: Product;
+  meta: {};
 };
 
 export type CartItem = {
   cartID: string;
-  productID: number;
+  productID: string;
   image: string;
   title: string;
   price: string;
