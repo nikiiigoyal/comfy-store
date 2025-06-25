@@ -33,5 +33,6 @@ export const loader =
       </div>
         </>
     )
+    
 }
 export default Checkout
