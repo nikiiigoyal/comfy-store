@@ -19,6 +19,7 @@ import { action as registerAction } from './pages/Register';
 import { action as loginAction } from './pages/Login';
 import { store } from "./store";
 import { loader } from './pages/Products';
+import HomePage from './components/Homepage';
 
 
 const router = createBrowserRouter([
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Landing />,
+        element: <HomePage />,
         // loader: landingLoader,
         errorElement: <ErrorElement />,
       },

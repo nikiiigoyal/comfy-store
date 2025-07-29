@@ -1,49 +1,213 @@
-import { Form, Link, useLoaderData } from "react-router-dom";
-import { useState } from "react";
-import { ChevronDown, ChevronUp, Filter, X } from "lucide-react";
-
-import type { ProductsResponseWithParams } from "../utils/types";
-import FormInput from "./FormInput";
-import FormCheckbox from "./FormCheckbox";
-import FormRange from "./FormRange";
-import SelectInput from "./FormSelect";
-import { Button } from "./ui/button";
+import  { useState } from 'react';
+import { Filter, X } from 'lucide-react';
 
 const Filters = () => {
-  const { meta, params } = useLoaderData() as ProductsResponseWithParams;
-  const { search, company, category, shipping, order, price } = params;
-  
-  const [isOpen, setIsOpen] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({
-    category: true,
-    company: true,
-    price: true,
-    sort: false,
-    shipping: true
+  const [formData, setFormData] = useState({
+    search: '',
+    category: 'all',
+    company: 'all',
+    order: 'a-z',
+    price: 1000,
+    shipping: false
   });
+  
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // Add default "All" option to categories
-  const categoryOptions = ['All', ...(meta.categories || [])];
-  const companyOptions = ['All', ...(meta.companies || [])];
+  // Sample data - replace with your actual data from Supabase
+  const categoryOptions = ['all', 'tables', 'chairs', 'sofas', 'beds', 'storage'];
+  const companyOptions = ['all', 'ikea', 'ashley', 'pottery barn', 'west elm', 'crate & barrel'];
+  
+  const sortOptions = [
+    { value: 'a-z', label: 'a-z' },
+    { value: 'z-a', label: 'z-a' },  
+    { value: 'high', label: 'high' },
+    { value: 'low', label: 'low' }
+  ];
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
+  const handleInputChange = (name: string, value: string | number | boolean) => {
+    setFormData(prev => ({
       ...prev,
-      [section]: !prev[section]
+      [name]: value
     }));
   };
 
-  const hasActiveFilters = search || category !== 'All' || company !== 'All' || shipping || price;
+  const handleSubmit = (e: { preventDefault: () => void; } | undefined) => {
+    e.preventDefault();
+    console.log('Filter data:', formData);
+    // Here you would typically update your URL params or call your loader
+  };
+
+  const handleReset = () => {
+    setFormData({
+      search: '',
+      category: 'all',
+      company: 'all',
+      order: 'a-z',
+      price: 1000,
+      shipping: false
+    });
+  };
+
+  const hasActiveFilters = formData.search || formData.category !== 'all' || formData.company !== 'all' || formData.shipping || formData.price < 1000;
 
   return (
     <>
+      {/* Desktop Horizontal Layout */}
+      <div className="hidden lg:block bg-blue-50 p-6 rounded-lg mb-8">
+        <div className="space-y-6">
+          {/* First Row - Main Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Search Product */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Search Product
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={formData.search}
+                  onChange={(e) => handleInputChange('search', e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Select Category */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Select Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) => handleInputChange('category', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none"
+              >
+                {categoryOptions.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Select Company */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Select Company
+              </label>
+              <select
+                value={formData.company}
+                onChange={(e) => handleInputChange('company', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none"
+              >
+                {companyOptions.map((comp) => (
+                  <option key={comp} value={comp}>
+                    {comp}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort By */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Sort By
+              </label>
+              <select
+                value={formData.order}
+                onChange={(e) => handleInputChange('order', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none"
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Second Row - Price Range and Free Shipping */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            {/* Price Range */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Select Price
+              </label>
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  value={formData.price}
+                  onChange={(e) => handleInputChange('price', parseInt(e.target.value))}
+                  className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, #3B82F6 0%, #3B82F6 ${(formData.price / 1000) * 100}%, #E5F3FF ${(formData.price / 1000) * 100}%, #E5F3FF 100%)`
+                  }}
+                />
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>0</span>
+                  <span className="font-medium">${formData.price.toLocaleString()}.00</span>
+                  <span>Max : $1,000.00</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Free Shipping */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Free Shipping
+              </label>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.shipping}
+                  onChange={(e) => handleInputChange('shipping', e.target.checked)}
+                  className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">Free Shipping Only</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button 
+                onClick={handleSubmit}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors"
+              >
+                SEARCH
+              </button>
+              <button 
+                onClick={handleReset}
+                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-lg font-medium border-purple-600 transition-colors"
+              >
+                RESET
+              </button>
+            </div>
+          </div>
+
+          {/* Clear filters link */}
+          {hasActiveFilters && (
+            <div className="text-center">
+              <button 
+                onClick={handleReset}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center gap-1 transition-colors"
+              >
+                <X className="h-4 w-4" />
+                Clear All Filters
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Mobile Filter Toggle */}
       <div className="lg:hidden mb-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between"
+        <button
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+          className="w-full flex items-center justify-between py-3 px-4 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors"
         >
           <span className="flex items-center gap-2">
             <Filter className="h-4 w-4" />
@@ -54,203 +218,181 @@ const Filters = () => {
               </span>
             )}
           </span>
-          {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-        </Button>
+        </button>
       </div>
 
-      {/* Filter Panel */}
-      <div className={`
-        bg-white border border-gray-200 rounded-lg p-4 space-y-6
-        ${isOpen ? 'block' : 'hidden'} lg:block
-        lg:sticky lg:top-4 lg:h-fit lg:max-h-screen lg:overflow-y-auto
-      `}>
-        <Form className="space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b pb-3">
-            <h3 className="font-semibold text-lg flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              Filters
-            </h3>
-            {hasActiveFilters && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                asChild
-                className="text-blue-600 hover:text-blue-800"
+      {/* Mobile Filters Panel */}
+      {showMobileFilters && (
+        <div className="lg:hidden bg-white border border-gray-200 rounded-lg p-4 mb-4">
+          <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b pb-3">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Filter className="h-5 w-5" />
+                Filters
+              </h3>
+              <button
+                onClick={() => setShowMobileFilters(false)}
+                className="p-1 hover:bg-gray-100 rounded"
               >
-                <Link to="/products" className="flex items-center gap-1">
-                  <X className="h-4 w-4" />
-                  Clear All
-                </Link>
-              </Button>
-            )}
-          </div>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-          {/* Search */}
-          <div className="space-y-3">
-            <FormInput 
-              label="Search Products" 
-              name="search" 
-              defaultValue={search} 
-              type="search"
-              className="w-full"
-            />
-          </div>
-
-          {/* Category Filter */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => toggleSection('category')}
-              className="flex items-center justify-between w-full text-left font-medium"
-            >
-              Category
-              {expandedSections.category ? 
-                <ChevronUp className="h-4 w-4" /> : 
-                <ChevronDown className="h-4 w-4" />
-              }
-            </button>
-            {expandedSections.category && (
-              <div className="space-y-2">
-                <SelectInput
-                  label=""
-                  name="category"
-                  options={categoryOptions}
-                  defaultValue={category || 'All'}
-                  className="w-full"
+            {/* Mobile Filter Fields */}
+            <div className="space-y-4">
+              {/* Search */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Search Product
+                </label>
+                <input
+                  type="text"
+                  value={formData.search}
+                  onChange={(e) => handleInputChange('search', e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
-            )}
-          </div>
 
-          {/* Brand/Company Filter */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => toggleSection('company')}
-              className="flex items-center justify-between w-full text-left font-medium"
-            >
-              Brand
-              {expandedSections.company ? 
-                <ChevronUp className="h-4 w-4" /> : 
-                <ChevronDown className="h-4 w-4" />
-              }
-            </button>
-            {expandedSections.company && (
-              <div className="space-y-2">
-                <SelectInput
-                  label=""
-                  name="company"
-                  options={companyOptions}
-                  defaultValue={company || 'All'}
-                  className="w-full"
-                />
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => handleInputChange('category', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white outline-none"
+                >
+                  {categoryOptions.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
-          </div>
 
-          {/* Price Range */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => toggleSection('price')}
-              className="flex items-center justify-between w-full text-left font-medium"
-            >
-              Price Range
-              {expandedSections.price ? 
-                <ChevronUp className="h-4 w-4" /> : 
-                <ChevronDown className="h-4 w-4" />
-              }
-            </button>
-            {expandedSections.price && (
-              <div className="space-y-3">
-                <FormRange 
-                  label="" 
-                  name="price" 
-                  defaultValue={price}
-                  className="w-full"
-                />
+              {/* Company */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Company
+                </label>
+                <select
+                  value={formData.company}
+                  onChange={(e) => handleInputChange('company', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white outline-none"
+                >
+                  {companyOptions.map((comp) => (
+                    <option key={comp} value={comp}>
+                      {comp}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
-          </div>
 
-          {/* Shipping Options */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => toggleSection('shipping')}
-              className="flex items-center justify-between w-full text-left font-medium"
-            >
-              Shipping
-              {expandedSections.shipping ? 
-                <ChevronUp className="h-4 w-4" /> : 
-                <ChevronDown className="h-4 w-4" />
-              }
-            </button>
-            {expandedSections.shipping && (
-              <div className="space-y-2">
-                <FormCheckbox 
-                  label="Free Shipping Only" 
-                  name="shipping" 
-                  defaultValue={shipping}
-                />
+              {/* Sort */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Sort By
+                </label>
+                <select
+                  value={formData.order}
+                  onChange={(e) => handleInputChange('order', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white outline-none"
+                >
+                  {sortOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
-          </div>
 
-          {/* Sort Options */}
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => toggleSection('sort')}
-              className="flex items-center justify-between w-full text-left font-medium"
-            >
-              Sort By
-              {expandedSections.sort ? 
-                <ChevronUp className="h-4 w-4" /> : 
-                <ChevronDown className="h-4 w-4" />
-              }
-            </button>
-            {expandedSections.sort && (
-              <div className="space-y-2">
-                <SelectInput
-                  label=""
-                  name="order"
-                  options={[
-                    { value: 'a-z', label: 'Name: A to Z' },
-                    { value: 'z-a', label: 'Name: Z to A' },
-                    { value: 'high', label: 'Price: High to Low' },
-                    { value: 'low', label: 'Price: Low to High' }
-                  ]}
-                  defaultValue={order}
-                  className="w-full"
+              {/* Price Range */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Price Range
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  value={formData.price}
+                  onChange={(e) => handleInputChange('price', parseInt(e.target.value))}
+                  className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
                 />
+                <div className="flex justify-between text-sm text-gray-600 mt-1">
+                  <span>$0</span>
+                  <span>${formData.price.toLocaleString()}</span>
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Apply/Reset Buttons */}
-          <div className="space-y-2 pt-4 border-t">
-            <Button 
-              type="submit"
-              className="w-full"
-              size="sm"
-            >
-              Apply Filters
-            </Button>
-            <Button 
-              type="button"
-              variant="outline"
-              size="sm"
-              asChild
-              className="w-full"
-            >
-              <Link to="/products">Reset All</Link>
-            </Button>
+              {/* Free Shipping */}
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.shipping}
+                  onChange={(e) => handleInputChange('shipping', e.target.checked)}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label className="ml-2 text-sm text-gray-700">
+                  Free Shipping Only
+                </label>
+              </div>
+            </div>
+
+            {/* Mobile Action Buttons */}
+            <div className="flex gap-2 pt-4 border-t">
+              <button 
+                onClick={() => {
+                  handleSubmit();
+                  setShowMobileFilters(false);
+                }}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+              >
+                Apply Filters
+              </button>
+              <button 
+                onClick={() => {
+                  handleReset();
+                  setShowMobileFilters(false);
+                }}
+                className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg transition-colors"
+              >
+                Reset
+              </button>
+            </div>
           </div>
-        </Form>
-      </div>
+        </div>
+      )}
+
+      
+      {/* Add custom CSS for range slider */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3B82F6;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          }
+          
+          .slider::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3B82F6;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          }
+        `
+          }} />
     </>
   );
 };
