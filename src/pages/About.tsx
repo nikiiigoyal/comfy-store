@@ -2,9 +2,9 @@ function About () {
     return(
         <>
         <section>
-      <h1 className='flex flex-wrap gap-2 sm:gap-x-6 items-center justify-center text-4xl font-bold leading-none tracking-tight sm:text-6xl '>
+      <h1 className='flex flex-wrap gap-2 sm:gap-x-6 items-center mt-5 justify-center text-4xl font-bold leading-none tracking-tight sm:text-6xl text-[hsla(214,30%,32%,1)]'>
         We love
-        <span className='bg-primary py-2 px-4 rounded-lg  tracking-widest text-white'>
+        <span className='bg-[hsla(212,100%,51%,1)] py-3 px-5 rounded-lg  tracking-widest text-[hsla(231,100%,93%,1)] text-2xl'>
           comfy
         </span>
       </h1>
